@@ -6,15 +6,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:padding="32dp">
+    android:padding="@dimen/margen_botonesdefault">
 
     <TextView
+
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Asteroides"
+
+        android:text="@string/app_name"
         android:textSize="24sp"
-        android:textStyle="bold"
+
         android:layout_marginTop="8dp"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginBottom="8dp"
@@ -25,20 +27,23 @@
         android:layout_marginStart="8dp" />
 
     <Button
+        style="@style/EstiloBoton"
         android:id="@+id/button5"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginBottom="8dp"
-        android:text="jugar"
+        android:text="@string/app_botonJugar"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/button6"
         tools:layout_editor_absoluteX="32dp" />
 
     <Button
+        style="@style/EstiloBotonalternativo"
         android:id="@+id/button6"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:text="configurar"
+        android:text="@string/app_botonConfigurar"
         app:layout_constraintBottom_toTopOf="@+id/button7"
         tools:layout_editor_absoluteX="32dp" />
 
@@ -47,7 +52,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:text="acerca de"
+        android:text="@string/app_botonAcerca"
         app:layout_constraintBottom_toTopOf="@+id/button8"
         tools:layout_editor_absoluteX="32dp" />
 
@@ -56,7 +61,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="104dp"
-        android:text="salir"
+        android:text="@string/app_botonsalir"
         app:layout_constraintBottom_toBottomOf="parent"
      />
 

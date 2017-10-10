@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="vertical"
-        android:padding="@dimen/margen_botonesdefault">
+        android:padding="@dimen/margen_botonesxlarge">
 
         <TableRow
             android:layout_width="match_parent"
@@ -30,16 +30,12 @@
 
             <Button
                 android:id="@+id/button10"
-
-                style="@style/EstiloBoton"
-
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/app_botonJugar" />
 
             <Button
-                style="@style/EstiloBotonalternativo"
                 android:id="@+id/button9"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
