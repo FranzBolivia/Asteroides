@@ -61,8 +61,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="104dp"
+
         android:text="@string/app_botonsalir"
-        app:layout_constraintBottom_toBottomOf="parent"
-     />
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
