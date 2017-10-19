@@ -30,19 +30,29 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-        public void lanzarAcercaDe(View view) {
+
+    public void lanzarAcercaDe(View view) {
         Intent i = new Intent(this, acercaDeActivity.class);
         startActivity(i);
     }
+    public void lanzarpreferencias(View view){
+        Intent i = new Intent(this, PreferenciasActivity.class);
+        startActivity(i);
+
+    }
 
 
-    @Override public boolean onCreateOptionsMenu(Menu menu) {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menun_main, menu);
         return true; /** true -> el menú ya está visible */
     }
-    @Override public boolean onOptionsItemSelected(MenuItem item) {
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            lanzarpreferencias(null);
             return true;
         }
         if (id == R.id.acercaDe) {
@@ -51,5 +61,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 
 }

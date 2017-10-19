@@ -38,11 +38,12 @@
         tools:layout_editor_absoluteX="32dp" />
 
     <Button
-        style="@style/EstiloBotonalternativo"
         android:id="@+id/button6"
+        style="@style/EstiloBotonalternativo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
+        android:onClick="lanzarpreferencias"
         android:text="@string/app_botonConfigurar"
         app:layout_constraintBottom_toTopOf="@+id/button7"
         tools:layout_editor_absoluteX="32dp" />
