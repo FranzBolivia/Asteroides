@@ -21,6 +21,10 @@
             android:name=".acercaDeActivity"
             android:label="Acerca de ..."
             android:theme="@android:style/Theme.Dialog" />
+        <activity
+            android:name=".Puntuaciones"
+            android:label="Puntuaciones ..."
+            android:theme="@style/Theme.AppCompat" />
 
         <activity
             android:name=".PreferenciasActivity"

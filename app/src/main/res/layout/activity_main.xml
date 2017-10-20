@@ -63,7 +63,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="104dp"
 
-        android:text="@string/app_botonsalir"
+        android:text="Puntuaciones"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

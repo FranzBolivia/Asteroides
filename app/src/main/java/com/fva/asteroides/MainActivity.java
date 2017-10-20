@@ -11,6 +11,7 @@ import android.widget.Button;
 public class MainActivity extends AppCompatActivity {
     private Button bAcercaDe;
     private Button bSalir;
+    public static AlmacenPuntuaciones almacen = new AlmacenPuntuacionesArray();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,9 +27,15 @@ public class MainActivity extends AppCompatActivity {
         });
         bSalir.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                finish();
+                lanzarPuntuaciones(null);
+
             }
         });
+    }
+
+    public void lanzarPuntuaciones(View view) {
+        Intent i = new Intent(this, Puntuaciones.class);
+        startActivity(i);
     }
 
     public void lanzarAcercaDe(View view) {
