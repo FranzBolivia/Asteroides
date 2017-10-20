@@ -22,48 +22,48 @@
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/button5"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginEnd="8dp"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="8dp" />
+        tools:layout_editor_absoluteX="106dp" />
 
     <Button
         style="@style/EstiloBoton"
         android:id="@+id/button5"
-        android:layout_width="match_parent"
+        android:layout_width="308dp"
         android:layout_height="48dp"
         android:layout_marginBottom="8dp"
         android:text="@string/app_botonJugar"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/button6"
-        tools:layout_editor_absoluteX="32dp" />
+        tools:layout_editor_absoluteX="8dp" />
 
     <Button
         android:id="@+id/button6"
         style="@style/EstiloBotonalternativo"
-        android:layout_width="match_parent"
+        android:layout_width="308dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:onClick="lanzarpreferencias"
         android:text="@string/app_botonConfigurar"
         app:layout_constraintBottom_toTopOf="@+id/button7"
-        tools:layout_editor_absoluteX="32dp" />
+        tools:layout_editor_absoluteX="8dp" />
 
     <Button
         android:id="@+id/button7"
-        android:layout_width="match_parent"
+        android:layout_width="308dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:text="@string/app_botonAcerca"
         app:layout_constraintBottom_toTopOf="@+id/button8"
-        tools:layout_editor_absoluteX="32dp" />
+        tools:layout_editor_absoluteX="8dp" />
 
     <Button
         android:id="@+id/button8"
-        android:layout_width="match_parent"
+        android:layout_width="308dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="104dp"
 
         android:text="Puntuaciones"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="8dp" />
 
 </android.support.constraint.ConstraintLayout>

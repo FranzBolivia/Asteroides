@@ -1,16 +1,20 @@
 package com.fva.asteroides;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     private Button bAcercaDe;
     private Button bSalir;
+    private Button bJugar;
     public static AlmacenPuntuaciones almacen = new AlmacenPuntuacionesArray();
 
     @Override
@@ -20,6 +24,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         bAcercaDe = (Button) findViewById(R.id.button7);
         bSalir = (Button) findViewById(R.id.button8);
+        bJugar = (Button) findViewById(R.id.button5);
+
+
         bAcercaDe.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 lanzarAcercaDe(null);
@@ -29,6 +36,11 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 lanzarPuntuaciones(null);
 
+            }
+        });
+        bJugar.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                mostrarPreferencias(null);
             }
         });
     }
@@ -68,6 +80,12 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
+    public void mostrarPreferencias(View view){
+        SharedPreferences pref =
+                PreferenceManager.getDefaultSharedPreferences(this);
+        String s = "música: " + pref.getBoolean("musica",true)
+                +", gráficos: " + pref.getString("graficos","?");
+        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
+    }
 
 }
