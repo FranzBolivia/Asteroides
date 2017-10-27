@@ -31,8 +31,11 @@
             android:label="Preferencias ..."
             android:theme="@android:style/Theme.Dialog" />
         <activity
+
+            android:screenOrientation="landscape"
             android:name=".Juego"
             android:label="Juego ..."
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
           />
 
 
