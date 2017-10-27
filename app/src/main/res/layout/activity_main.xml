@@ -62,6 +62,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="104dp"
+        android:background="@drawable/degradado"
 
         android:text="Puntuaciones"
         app:layout_constraintBottom_toBottomOf="parent" />

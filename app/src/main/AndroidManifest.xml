@@ -30,6 +30,10 @@
             android:name=".PreferenciasActivity"
             android:label="Preferencias ..."
             android:theme="@android:style/Theme.Dialog" />
+        <activity
+            android:name=".Juego"
+            android:label="Juego ..."
+          />
 
 
 

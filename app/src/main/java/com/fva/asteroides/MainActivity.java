@@ -11,6 +11,7 @@ import android.widget.Button;
 public class MainActivity extends AppCompatActivity {
     private Button bAcercaDe;
     private Button bSalir;
+    private Button bJugar;
     public static AlmacenPuntuaciones almacen = new AlmacenPuntuacionesArray();
 
     @Override
@@ -18,8 +19,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_main_con_linearlayout);
         setContentView(R.layout.activity_main);
+        bJugar = (Button) findViewById(R.id.button5);
+
+
         bAcercaDe = (Button) findViewById(R.id.button7);
+        bAcercaDe.setBackgroundResource(R.drawable.degradado);
         bSalir = (Button) findViewById(R.id.button8);
+
+        bJugar.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                lanzarJuego(null);
+
+            }
+        });
+
+
         bAcercaDe.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 lanzarAcercaDe(null);
@@ -33,6 +47,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void lanzarJuego(View view) {
+        Intent i = new Intent(this, Juego.class);
+        startActivity(i);
+    }
+
     public void lanzarPuntuaciones(View view) {
         Intent i = new Intent(this, Puntuaciones.class);
         startActivity(i);
@@ -42,7 +61,8 @@ public class MainActivity extends AppCompatActivity {
         Intent i = new Intent(this, acercaDeActivity.class);
         startActivity(i);
     }
-    public void lanzarpreferencias(View view){
+
+    public void lanzarpreferencias(View view) {
         Intent i = new Intent(this, PreferenciasActivity.class);
         startActivity(i);
 
