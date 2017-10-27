@@ -1,10 +1,14 @@
 package com.fva.asteroides;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.widget.Toast;
+
+import static com.fva.asteroides.R.styleable.View;
 
 /**
  * Created by DTIC-Dir on 19/10/2017.
@@ -15,6 +19,10 @@ public class PreferenciasFragment extends PreferenceFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferencias);
+
+
+
+
 
 
 
