@@ -9,9 +9,16 @@ import android.graphics.Path;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.PathShape;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -21,7 +28,10 @@ import java.util.List;
  * Created by DTIC-Dir on 26/10/2017.
  */
 
-public class VistaJuego extends View {
+public class VistaJuego extends View implements SensorEventListener{
+
+
+
     // Thread encargado de procesar el juego
     private ThreadJuego thread = new ThreadJuego();
     // Cada cuanto queremos procesar cambios (ms)
@@ -49,14 +59,34 @@ public class VistaJuego extends View {
 
         Drawable drawableNave, drawableAsteroide, drawableMisil;
 
+        SharedPreferences pref = PreferenceManager.
+                getDefaultSharedPreferences(getContext());
+
+
+// Se habilita el sensor para detectar el giro....
+
+
+
+        if (pref.getBoolean ("controles", true)) {
+            SensorManager mSensorManager = (SensorManager)
+                    context.getSystemService(Context.SENSOR_SERVICE);
+            List<Sensor> listSensors = mSensorManager.getSensorList(
+                    Sensor.TYPE_ACCELEROMETER);
+            if (!listSensors.isEmpty()) {
+                Sensor orientationSensor = listSensors.get(0);
+                mSensorManager.registerListener(this, orientationSensor,
+                        SensorManager.SENSOR_DELAY_GAME);
+            }
+
+        }
 //Dibujando los Asteorides
 
         drawableAsteroide = context.getResources().getDrawable(R.drawable.asteroide1);
         ContextCompat.getDrawable(context, R.drawable.asteroide1);
         //DIbujando el Asteriode REtro
 
-        SharedPreferences pref = PreferenceManager.
-                getDefaultSharedPreferences(getContext());
+//        SharedPreferences pref = PreferenceManager.
+  //              getDefaultSharedPreferences(getContext());
 
 //Dibujando la nave2
         drawableNave = context.getResources().getDrawable(R.drawable.nave);
@@ -143,6 +173,8 @@ public class VistaJuego extends View {
         }
     }
 
+
+    //Desde aqui se llama al hilo que se crea..
     @Override
     protected void onSizeChanged(int ancho, int alto,
                                  int ancho_anter, int alto_anter) {
@@ -176,7 +208,7 @@ public class VistaJuego extends View {
             asteroide.dibujaGrafico(canvas);
         }
     }
-
+//Actualiza fisica pone en movimiento los asteroides y la nave..
     protected synchronized void  actualizaFisica() {
         long ahora = System.currentTimeMillis();
         if (ultimoProceso + PERIODO_PROCESO > ahora) {
@@ -204,6 +236,36 @@ public class VistaJuego extends View {
         }
     }
 
+    @Override public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+
+    private boolean hayValorInicial = false;
+    private float valorInicial;
+    private float temporal;
+
+    @Override public void onSensorChanged(SensorEvent event) {
+
+        float valor = event.values[1];
+        float acele = event.values[0];
+        if (!hayValorInicial){
+            //aceleracionNave= acele;
+            valorInicial = valor;
+            hayValorInicial = true;
+        }
+        giroNave=(int) (valor-valorInicial)/1 ;
+
+        if (acele<temporal)
+        aceleracionNave = +PASO_ACELERACION_NAVE;
+        //    aceleracionNave= temporal-acele;
+        else aceleracionNave = -PASO_ACELERACION_NAVE;
+       // else aceleracionNave= temporal+acele;
+
+        temporal=acele;
+        //Log.d("variable X", Float.toString((float) acele)+"...."+Float.toString((float)aceleracionNave ));
+
+
+    }
+
+// genera un ciclo infinito para llamar al actualiza mfisica..
 
     class ThreadJuego extends Thread {
         @Override
@@ -213,4 +275,94 @@ public class VistaJuego extends View {
             }
         }
     }
+
+    // Se crea el manejador para el teclado ...
+    // Cuando se presiona
+    @Override
+    public boolean onKeyDown(int codigoTecla, KeyEvent evento) {
+        super.onKeyDown(codigoTecla, evento);
+// Suponemos que vamos a procesar la pulsación
+        boolean procesada = true;
+        switch (codigoTecla) {
+            case KeyEvent.KEYCODE_DPAD_UP:
+                aceleracionNave = +PASO_ACELERACION_NAVE;
+                break;
+            case KeyEvent.KEYCODE_DPAD_LEFT:
+                giroNave = -PASO_GIRO_NAVE;
+                break;
+            case KeyEvent.KEYCODE_DPAD_RIGHT:
+                giroNave = +PASO_GIRO_NAVE;
+                break;
+            case KeyEvent.KEYCODE_DPAD_DOWN:
+                aceleracionNave= -PASO_ACELERACION_NAVE;
+                break;
+            case KeyEvent.KEYCODE_DPAD_CENTER:
+
+
+            case KeyEvent.KEYCODE_ENTER:
+      //          activaMisil();
+                break;
+            default:
+// Si estamos aquí, no hay pulsación que nos interese
+                procesada = false;
+                break;
+        }
+        return procesada;
+    }
+    // Cuando se suelta
+    @Override public boolean onKeyUp(int codigoTecla, KeyEvent evento) {
+        super.onKeyUp(codigoTecla, evento);
+// Suponemos que vamos a procesar la pulsación
+        boolean procesada = true;
+        switch (codigoTecla) {
+            case KeyEvent.KEYCODE_DPAD_UP:
+                aceleracionNave = 0;
+                break;
+            case KeyEvent.KEYCODE_DPAD_LEFT:
+            case KeyEvent.KEYCODE_DPAD_RIGHT:
+                giroNave = 0;
+                break;
+            default:
+// Si estamos aquí, no hay pulsación que nos interese
+                procesada = false;
+                break;
+        }
+        return procesada;
+    }
+
+//Manipulando la nave....
+    private float mX=0, mY=0;
+    private boolean disparo=false;
+    @Override
+    public boolean onTouchEvent (MotionEvent event) {
+        super.onTouchEvent(event);
+        float x = event.getX();
+        float y = event.getY();
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                disparo=true;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                float dx = Math.abs(x - mX);
+                float dy = Math.abs(y - mY);
+                if (dy<6 && dx>6){
+                    giroNave = Math.round((x - mX) / 2);
+                    disparo = false;
+                } else if (dx<6 && dy>6){
+                    aceleracionNave = Math.round((mY - y) / 25);
+                    disparo = false;
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                giroNave = 0;
+                aceleracionNave = 0;
+                if (disparo){
+                  //  activaMisil();
+                }
+                break;
+        }
+        mX=x; mY=y;
+        return true;
+    }
+
 }

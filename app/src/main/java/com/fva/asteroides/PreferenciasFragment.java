@@ -20,12 +20,6 @@ public class PreferenciasFragment extends PreferenceFragment {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferencias);
 
-
-
-
-
-
-
         final EditTextPreference fragmentos = (EditTextPreference) findPreference("fragmentos");
 
         fragmentos.setSummary("En cuantos trozos se divide un asteroide (3)");

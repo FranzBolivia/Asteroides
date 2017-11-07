@@ -7,6 +7,10 @@
         android:key="musica"
         android:summary="Se reproduce música de fondo"
         android:title="Reproducir música" />
+        <CheckBoxPreference
+            android:key="controles"
+            android:summary="Usar sensores para navegacion"
+            android:title="Nacegacion por Sensores" />
     <ListPreference
         android:defaultValue="1"
         android:entries="@array/tiposGraficos"
@@ -20,6 +24,7 @@
         android:key="fragmentos"
         android:summary="En cuantos trozos se divide un asteroide"
         android:title="Número de Fragmentos" />
+
     </PreferenceCategory>
 
 <PreferenceCategory
@@ -41,6 +46,6 @@ android:title="Multijugador">
     android:entryValues="@array/tiposConexionesValores"
     android:key="conexion"
     android:summary="Selecciona el tipo de conexion.."
-    android:title="Tipo de gráficos" />
+    android:title="Conexion Red " />
 </PreferenceCategory>
 </PreferenceScreen>
