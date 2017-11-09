@@ -21,16 +21,17 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewDebug;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 /**
  * Created by DTIC-Dir on 26/10/2017.
  */
 
-public class VistaJuego extends View implements SensorEventListener{
-
+public class VistaJuego extends View implements SensorEventListener {
 
 
     // Thread encargado de procesar el juego
@@ -53,13 +54,18 @@ public class VistaJuego extends View implements SensorEventListener{
     // //// ASTEROIDES //////
     private List<Grafico> asteroides; // Lista con los Asteroides
     private int numAsteroides = 5; // Número inicial de asteroides
-    private int numFragmentos = 3; // Fragmentos en que se divide
+    private int numFragmentos = 3;
+    private int numMisiles = 5;// Fragmentos en que se divide
 
     // //// MISIL //////
-    private Grafico misil;
+
+    private Vector<Grafico> misiles;
+    //private Grafico misil;
     private static int PASO_VELOCIDAD_MISIL = 12;
-    private boolean misilActivo = false;
-    private int tiempoMisil;
+    //private boolean misilActivo = false;
+    //private int tiempoMisil;
+    private Vector<Integer> tiempoMisiles;
+
 
     public VistaJuego(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -73,8 +79,7 @@ public class VistaJuego extends View implements SensorEventListener{
 // Se habilita el sensor para detectar el giro....
 
 
-
-        if (pref.getBoolean ("controles", true)) {
+        if (pref.getBoolean("controles", true)) {
             SensorManager mSensorManager = (SensorManager)
                     context.getSystemService(Context.SENSOR_SERVICE);
             List<Sensor> listSensors = mSensorManager.getSensorList(
@@ -93,7 +98,7 @@ public class VistaJuego extends View implements SensorEventListener{
         //DIbujando el Asteriode REtro
 
 //        SharedPreferences pref = PreferenceManager.
-  //              getDefaultSharedPreferences(getContext());
+        //              getDefaultSharedPreferences(getContext());
 
 //Dibujando la nave2
         drawableNave = context.getResources().getDrawable(R.drawable.nave);
@@ -162,7 +167,7 @@ public class VistaJuego extends View implements SensorEventListener{
 
 
         }
-        if (pref.getString("graficos", "1").equals("2")||pref.getString("graficos", "1").equals("3") )
+        if (pref.getString("graficos", "1").equals("2") || pref.getString("graficos", "1").equals("3"))
 
         {
             drawableAsteroide =
@@ -170,15 +175,29 @@ public class VistaJuego extends View implements SensorEventListener{
             ContextCompat.getDrawable(context, R.drawable.estrella);
 
             drawableNave = context.getResources().getDrawable(R.drawable.nave2);
-            ContextCompat.getDrawable(context,R.drawable.nave2);
+            ContextCompat.getDrawable(context, R.drawable.nave2);
             setBackgroundColor(Color.BLACK);
         }
 
         // Dibujando la Nave el misil y los asteorides
 
         nave = new Grafico(this, drawableNave);
-        misil =  new Grafico(this,drawableMisil);
+        //  misil =  new Grafico(this,drawableMisil);
+        misiles = new Vector<Grafico>(5);
+        tiempoMisiles = new Vector<Integer>();
+
         asteroides = new ArrayList<Grafico>();
+
+        for (int j = 0; j < numMisiles; j++) {
+
+            Grafico misil = new Grafico(this, drawableMisil);
+            misil.setIncY(Math.random() * 4 - 2);
+            misil.setIncX(Math.random() * 4 - 2);
+            misil.setAngulo((int) (Math.random() * 360));
+            //misil.setRotacion((int) (Math.random() * 8 - 4));
+            misiles.add(j,misil);
+            tiempoMisiles.add(j,0);
+        }
 
 
         for (int i = 0; i < numAsteroides; i++) {
@@ -190,8 +209,6 @@ public class VistaJuego extends View implements SensorEventListener{
             asteroides.add(asteroide);
         }
     }
-
-
 
 
     //Desde aqui se llama al hilo que se crea..
@@ -209,28 +226,34 @@ public class VistaJuego extends View implements SensorEventListener{
                 asteroide.setCenY((int) (Math.random() * alto));
             } while (asteroide.distancia(nave) < (ancho + alto) / 5);
         }
-        ultimoProceso =System.currentTimeMillis();
+        ultimoProceso = System.currentTimeMillis();
         thread.start();
 
     }
 
     @Override
-    protected  void onDraw(Canvas canvas) {
+    protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         nave.dibujaGrafico(canvas);
-        if (misilActivo) misil.dibujaGrafico(canvas);
+        for (int i = 0; i < numMisiles; i++)
 
+        {
+            if (tiempoMisiles.get(i)!=0 ) misiles.get(i).dibujaGrafico(canvas);
+
+        }
         //miImagen.setBounds(30,30,200,200 );
 
         //miImagen.draw(canvas);
 
-synchronized (asteroides){
-        for (Grafico asteroide : asteroides) {
-            asteroide.dibujaGrafico(canvas);
+        synchronized (asteroides) {
+            for (Grafico asteroide : asteroides) {
+                asteroide.dibujaGrafico(canvas);
+            }
         }
-    }}
-//Actualiza fisica pone en movimiento los asteroides y la nave..
-    protected  void  actualizaFisica() {
+    }
+
+    //Actualiza fisica pone en movimiento los asteroides y la nave..
+    protected void actualizaFisica() {
         long ahora = System.currentTimeMillis();
         if (ultimoProceso + PERIODO_PROCESO > ahora) {
             return; // Salir si el período de proceso no se ha cumplido.
@@ -246,7 +269,7 @@ synchronized (asteroides){
         double nIncY = nave.getIncY() + aceleracionNave *
                 Math.sin(Math.toRadians(nave.getAngulo())) * factorMov;
 // Actualizamos si el módulo de la velocidad no excede el máximo
-        if (Math.hypot(nIncX,nIncY) <= MAX_VELOCIDAD_NAVE){
+        if (Math.hypot(nIncX, nIncY) <= MAX_VELOCIDAD_NAVE) {
             nave.setIncX(nIncX);
             nave.setIncY(nIncY);
         }
@@ -255,65 +278,98 @@ synchronized (asteroides){
         for (Grafico asteroide : asteroides) {
             asteroide.incrementaPos(factorMov);
         }
-        // Actualizamos posición de misil
-        if (misilActivo) {
-            misil.incrementaPos(factorMov);
-            tiempoMisil-=factorMov;
-            if (tiempoMisil < 0) {
-                misilActivo = false;
-            } else {
-                for (int i = 0; i < asteroides.size(); i++)
-                    if (misil.verificaColision(asteroides.get(i))) {
-                        destruyeAsteroide(i);
+
+        for (int i = 0; i < numMisiles; i++) {
+            if (tiempoMisiles.get(i) > 0) {
+                misiles.get(i).incrementaPos(factorMov);
+                tiempoMisiles.set(i, (int) (tiempoMisiles.get(i) - factorMov));
+                for (int j = 0; j < asteroides.size(); j++) {
+                    if (misiles.get(i).verificaColision(asteroides.get(j))) {
+                        destruyeAsteroide(j);
+                        tiempoMisiles.set(i, 0);
                         break;
                     }
+                }
+            }
+
+        }
+
+
+
+    // Actualizamos posición de misil
+    /**  if (misilActivo) {
+     misil.incrementaPos(factorMov);
+     tiempoMisil-=factorMov;
+     if (tiempoMisil < 0) {
+     misilActivo = false;
+     } else {
+     for (int i = 0; i < asteroides.size(); i++)
+     if (misil.verificaColision(asteroides.get(i))) {
+     destruyeAsteroide(i);
+     break;
+     }
+     }
+     }*/
+    }
+
+    private void destruyeAsteroide(int i) {
+        synchronized (asteroides) {
+            asteroides.remove(i);
+            // misilActivo = false;
+            // }
+            this.postInvalidate();
+        }
+    }
+    private void activaMisil() {
+        Grafico misilTemporal;
+        boolean misilActivo=false;
+        for (int i = 0; i < numMisiles; i++) {
+            Log.i("Tiempo Misiles", String.valueOf(i)+"..."+String.valueOf(nave.getAngulo()));
+            if (tiempoMisiles.get(i) == 0 && misilActivo==false ) {
+                misilTemporal=misiles.get(i);
+                misilTemporal.setCenX(nave.getCenX());
+                misilTemporal.setCenY(nave.getCenY());
+               misilTemporal.setAngulo(nave.getAngulo());
+                misilTemporal.setIncX(Math.cos(Math.toRadians(misiles.get(i).getAngulo())) *
+                        PASO_VELOCIDAD_MISIL);
+                misilTemporal.setIncY(Math.sin(Math.toRadians(misiles.get(i).getAngulo())) *
+                        PASO_VELOCIDAD_MISIL);
+                misiles.set(i,misilTemporal);
+
+                tiempoMisiles.set(i, (int) Math.min(this.getWidth() / Math.abs(misiles.get(i).
+                        getIncX()), this.getHeight() / Math.abs(misiles.get(i).getIncY())) - 2);
+                 misilActivo = true;
             }
         }
     }
 
-    private void destruyeAsteroide(int i) {
-        synchronized (asteroides){
-        asteroides.remove(i);
-        misilActivo = false;}
-        this.postInvalidate();
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
-    private void activaMisil() {
-        misil.setCenX(nave.getCenX());
-        misil.setCenY(nave.getCenY());
-        misil.setAngulo(nave.getAngulo());
-        misil.setIncX(Math.cos(Math.toRadians(misil.getAngulo())) *
-                PASO_VELOCIDAD_MISIL);
-        misil.setIncY(Math.sin(Math.toRadians(misil.getAngulo())) *
-                PASO_VELOCIDAD_MISIL);
-        tiempoMisil = (int) Math.min(this.getWidth() / Math.abs( misil.
-                getIncX()), this.getHeight() / Math.abs(misil.getIncY())) - 2;
-        misilActivo = true;
-    }
-
-    @Override public void onAccuracyChanged(Sensor sensor, int accuracy) {}
 
     private boolean hayValorInicial = false;
     private float valorInicial;
     private float temporal;
 
-    @Override public void onSensorChanged(SensorEvent event) {
+    @Override
+    public void onSensorChanged(SensorEvent event) {
 
         float valor = event.values[1];
         float acele = event.values[0];
-        if (!hayValorInicial){
+        if (!hayValorInicial) {
             //aceleracionNave= acele;
             valorInicial = valor;
             hayValorInicial = true;
         }
-        giroNave=(int) (valor-valorInicial)/1 ;
+        giroNave = (int) (valor - valorInicial) / 1;
 
-        if (acele<temporal)
-        aceleracionNave = +PASO_ACELERACION_NAVE;
-        //    aceleracionNave= temporal-acele;
+        if (acele < temporal)
+            aceleracionNave = +PASO_ACELERACION_NAVE;
+            //    aceleracionNave= temporal-acele;
         else aceleracionNave = -PASO_ACELERACION_NAVE;
-       // else aceleracionNave= temporal+acele;
+        // else aceleracionNave= temporal+acele;
 
-        temporal=acele;
+        temporal = acele;
         //Log.d("variable X", Float.toString((float) acele)+"...."+Float.toString((float)aceleracionNave ));
 
 
@@ -321,14 +377,15 @@ synchronized (asteroides){
 
 // genera un ciclo infinito para llamar al actualiza mfisica..
 
-    class ThreadJuego extends Thread {
-        @Override
-        public void run() {
-            while (true) {
-                actualizaFisica();
-            }
+class ThreadJuego extends Thread {
+    @Override
+    public void run() {
+        while (true) {
+            actualizaFisica();
         }
     }
+
+}
 
     // Se crea el manejador para el teclado ...
     // Cuando se presiona
@@ -348,7 +405,7 @@ synchronized (asteroides){
                 giroNave = +PASO_GIRO_NAVE;
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
-                aceleracionNave= -PASO_ACELERACION_NAVE;
+                aceleracionNave = -PASO_ACELERACION_NAVE;
                 break;
             case KeyEvent.KEYCODE_DPAD_CENTER:
 
@@ -363,8 +420,10 @@ synchronized (asteroides){
         }
         return procesada;
     }
+
     // Cuando se suelta
-    @Override public boolean onKeyUp(int codigoTecla, KeyEvent evento) {
+    @Override
+    public boolean onKeyUp(int codigoTecla, KeyEvent evento) {
         super.onKeyUp(codigoTecla, evento);
 // Suponemos que vamos a procesar la pulsación
         boolean procesada = true;
@@ -384,25 +443,26 @@ synchronized (asteroides){
         return procesada;
     }
 
-//Manipulando la nave....
-    private float mX=0, mY=0;
-    private boolean disparo=false;
+    //Manipulando la nave....
+    private float mX = 0, mY = 0;
+    private boolean disparo = false;
+
     @Override
-    public boolean onTouchEvent (MotionEvent event) {
+    public boolean onTouchEvent(MotionEvent event) {
         super.onTouchEvent(event);
         float x = event.getX();
         float y = event.getY();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                disparo=true;
+                disparo = true;
                 break;
             case MotionEvent.ACTION_MOVE:
                 float dx = Math.abs(x - mX);
                 float dy = Math.abs(y - mY);
-                if (dy<6 && dx>6){
+                if (dy < 6 && dx > 6) {
                     giroNave = Math.round((x - mX) / 2);
                     disparo = false;
-                } else if (dx<6 && dy>6){
+                } else if (dx < 6 && dy > 6) {
                     aceleracionNave = Math.round((mY - y) / 25);
                     disparo = false;
                 }
@@ -410,12 +470,13 @@ synchronized (asteroides){
             case MotionEvent.ACTION_UP:
                 giroNave = 0;
                 aceleracionNave = 0;
-                if (disparo){
+                if (disparo) {
                     activaMisil();
                 }
                 break;
         }
-        mX=x; mY=y;
+        mX = x;
+        mY = y;
         return true;
     }
 
