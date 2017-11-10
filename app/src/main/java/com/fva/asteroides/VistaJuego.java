@@ -65,6 +65,8 @@ public class VistaJuego extends View implements SensorEventListener {
     //private boolean misilActivo = false;
     //private int tiempoMisil;
     private Vector<Integer> tiempoMisiles;
+    private List<Sensor> listSensors;
+    private SensorManager mSensorManager;
 
 
     public VistaJuego(Context context, AttributeSet attrs) {
@@ -80,15 +82,10 @@ public class VistaJuego extends View implements SensorEventListener {
 
 
         if (pref.getBoolean("controles", true)) {
-            SensorManager mSensorManager = (SensorManager)
+             mSensorManager = (SensorManager)
                     context.getSystemService(Context.SENSOR_SERVICE);
-            List<Sensor> listSensors = mSensorManager.getSensorList(
+              listSensors = mSensorManager.getSensorList(
                     Sensor.TYPE_ACCELEROMETER);
-            if (!listSensors.isEmpty()) {
-                Sensor orientationSensor = listSensors.get(0);
-                mSensorManager.registerListener(this, orientationSensor,
-                        SensorManager.SENSOR_DELAY_GAME);
-            }
 
         }
 //Dibujando los Asteorides
@@ -377,15 +374,49 @@ public class VistaJuego extends View implements SensorEventListener {
 
 // genera un ciclo infinito para llamar al actualiza mfisica..
 
-class ThreadJuego extends Thread {
-    @Override
-    public void run() {
-        while (true) {
-            actualizaFisica();
+    class ThreadJuego extends Thread {
+        private boolean pausa,corriendo;
+        public synchronized void pausar() {
+            pausa = true;
+        }
+        public synchronized void reanudar() {
+            pausa = false;
+            notify();
+        }
+        public void detener() {
+            corriendo = false;
+            if (pausa) reanudar();
+        }
+        @Override public void run() {
+            corriendo = true;
+            while (corriendo) {
+                actualizaFisica();
+                synchronized (this) {
+                    while (pausa) {
+                        try {
+                            wait();
+                        } catch (Exception e) {
+                        }
+                    }
+                }
+            }
         }
     }
 
+public void activarSensores() {
+    if (!listSensors.isEmpty()) {
+
+
+        Sensor orientationSensor = listSensors.get(0);
+        mSensorManager.registerListener(this, orientationSensor,
+                SensorManager.SENSOR_DELAY_GAME);
+    }
 }
+    public void desactivarSensores() {
+        mSensorManager.unregisterListener(this);
+
+    }
+
 
     // Se crea el manejador para el teclado ...
     // Cuando se presiona
@@ -480,4 +511,7 @@ class ThreadJuego extends Thread {
         return true;
     }
 
+    public ThreadJuego getThread() {
+        return thread;
+    }
 }
