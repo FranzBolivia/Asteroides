@@ -1,73 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:padding="@dimen/margen_botonesdefault">
 
     <TextView
-        android:id="@+id/textView6"
-        android:layout_width="match_parent"
+
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="bottom"
 
         android:text="@string/app_name"
-        android:textAlignment="center"
         android:textSize="24sp"
-        android:textStyle="bold" />
 
-    <TableLayout
-        android:layout_weight="1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="vertical"
-        android:padding="@dimen/margen_botonesdefault">
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/button5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteX="106dp" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+    <Button
+        style="@style/EstiloBoton"
+        android:id="@+id/button5"
+        android:layout_width="226dp"
+        android:layout_height="55dp"
+        android:text="@string/app_botonJugar"
+        android:textStyle="bold"
+        android:layout_marginTop="32dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/button7" />
 
-            <Button
-                android:id="@+id/button10"
+    <Button
+        android:id="@+id/button6"
+        style="@style/EstiloBotonalternativo"
+        android:layout_width="226dp"
+        android:layout_height="53dp"
+        android:onClick="lanzarpreferencias"
+        android:text="@string/app_botonConfigurar"
+        android:layout_marginTop="32dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/button8"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="8dp" />
 
-                style="@style/EstiloBoton"
+    <Button
+        android:id="@+id/button7"
+        android:layout_width="226dp"
+        android:layout_height="53dp"
+        android:text="@string/app_botonAcerca"
+        tools:layout_editor_absoluteX="3dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/app_botonJugar" />
+    <Button
+        android:id="@+id/button8"
+        android:layout_width="226dp"
+        android:layout_height="53dp"
+        android:layout_marginBottom="8dp"
 
-            <Button
-                style="@style/EstiloBotonalternativo"
-                android:id="@+id/button9"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/app_botonConfigurar" />
+        android:background="@drawable/degradado"
+        android:text="Puntuaciones"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="8dp" />
 
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <Button
-                android:id="@+id/button11"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-
-                android:text="@string/app_botonAcerca" />
-
-            <Button
-                android:id="@+id/button12"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/app_botonsalir" />
-
-        </TableRow>
-
-    </TableLayout>
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

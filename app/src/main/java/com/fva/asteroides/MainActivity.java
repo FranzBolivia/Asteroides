@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,23 +14,43 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+
 public class MainActivity extends AppCompatActivity {
     private Button bAcercaDe;
     private Button bSalir;
     private Button bJugar;
     private Button bConfig;
     MediaPlayer mp;
+    //Bundle temporal;
 
     public static AlmacenPuntuaciones almacen = new AlmacenPuntuacionesArray();
+    String var;
+    int pos;
+    @Override protected void onSaveInstanceState(Bundle estadoGuardado){
+        super.onSaveInstanceState(estadoGuardado);
+        if (mp != null) {
+            int pos = mp.getCurrentPosition();
+            estadoGuardado.putInt("posicion", pos);
+        }
+    }
+    @Override protected void onRestoreInstanceState(Bundle estadoGuardado){
+        super.onRestoreInstanceState(estadoGuardado);
+        if (estadoGuardado != null && mp != null) {
+            int pos = estadoGuardado.getInt("posicion");
+            mp.seekTo(pos);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-       //configuramo el objeto Media player
-        // mp = MediaPlayer.create(this, R.raw.audio);
 
-        Toast.makeText(this, "onCreate", Toast.LENGTH_SHORT).show();
 
         super.onCreate(savedInstanceState);
+
+        //configuramo el objeto Media player
+        mp = MediaPlayer.create(this, R.raw.audio);
+
         //setContentView(R.layout.activity_main_con_linearlayout);
         setContentView(R.layout.activity_main);
 
@@ -44,8 +65,10 @@ public class MainActivity extends AppCompatActivity {
 
 
         bConfig = (Button) findViewById(R.id.button6);
+
         Animation animAccelerateDecelerate = AnimationUtils.loadAnimation(this, R.anim.interpolator_decelerate);
-        bConfig.startAnimation(animAccelerateDecelerate);
+        //bConfig.startAnimation(animAccelerateDecelerate);
+        bConfig.startAnimation(aparecer);
 
 
         bAcercaDe = (Button) findViewById(R.id.button7);
@@ -84,15 +107,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        //Iniciamos el audio
-     //   mp.start();
-        //Toast.makeText(this, "onStart", Toast.LENGTH_SHORT).show();
-    }
+     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
+        mp.start();
        // Toast.makeText(this, "onResume", Toast.LENGTH_SHORT).show();
     }
 
@@ -105,10 +125,20 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-       // Toast.makeText(this, "onStop", Toast.LENGTH_SHORT).show();
+       //
        //Paramos el player
-        // mp.stop();
+
         super.onStop();
+
+     //   pos=mp.getCurrentPosition();
+
+        mp.stop();
+
+
+        //temporal.putInt("posicion",5);
+
+        //onSaveInstanceState();
+        Toast.makeText(this, "Para la musica", Toast.LENGTH_SHORT).show();
     }
 
     @Override

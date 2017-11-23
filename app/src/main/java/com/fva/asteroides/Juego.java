@@ -1,6 +1,9 @@
 package com.fva.asteroides;
 
 import android.app.Activity;
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -16,9 +19,6 @@ public class Juego extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.juego);
         vistaJuego = (VistaJuego) findViewById(R.id.VistaJuego);
-
-
-
     }
 
     private VistaJuego vistaJuego;
@@ -33,6 +33,9 @@ public class Juego extends Activity {
     protected void onResume() {
         super.onResume();
         vistaJuego.getThread().reanudar();
+
+
+
         vistaJuego.activarSensores();
         Toast.makeText(this, "Activa Sensores", Toast.LENGTH_SHORT).show();
     }
@@ -44,13 +47,11 @@ public class Juego extends Activity {
     }
 
 
-
-
     @Override
     protected void onStop() {
 
         //Paramos el player
-        // mp.stop();
+        //mp.stop();
         super.onStop();
 
         vistaJuego.desactivarSensores();
