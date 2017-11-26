@@ -75,11 +75,12 @@ public class VistaJuego extends View implements SensorEventListener {
 SoundPool soundPool;
     int idDisparo, idExplosion;
 
+private Drawable drawableAsteoide[]=new Drawable[3];
 
     public VistaJuego(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        Drawable drawableNave, drawableAsteroide, drawableMisil;
+        Drawable drawableNave,  drawableMisil;
 
        SharedPreferences pref = PreferenceManager.
                 getDefaultSharedPreferences(getContext());
@@ -101,8 +102,8 @@ SoundPool soundPool;
 
 //Dibujando los Asteorides
 
-        drawableAsteroide = context.getResources().getDrawable(R.drawable.asteroide1);
-        ContextCompat.getDrawable(context, R.drawable.asteroide1);
+        //drawableAsteroide = context.getResources().getDrawable(R.drawable.asteroide1); El Asteroide en bitmap
+       // ContextCompat.getDrawable(context, R.drawable.asteroide1);
         //DIbujando el Asteriode REtro
 
 //        SharedPreferences pref = PreferenceManager.
@@ -131,13 +132,18 @@ SoundPool soundPool;
             pathAsteroide.lineTo((float) 0.0, (float) 0.6);
             pathAsteroide.lineTo((float) 0.0, (float) 0.2);
             pathAsteroide.lineTo((float) 0.3, (float) 0.0);
-            ShapeDrawable dAsteroide = new ShapeDrawable(
-                    new PathShape(pathAsteroide, 1, 1));
-            dAsteroide.getPaint().setColor(Color.WHITE);
-            dAsteroide.getPaint().setStyle(Paint.Style.STROKE);
-            dAsteroide.setIntrinsicWidth(50);
-            dAsteroide.setIntrinsicHeight(50);
-            drawableAsteroide = dAsteroide;
+
+         for (int i=0 ;i<3;i++) {
+             ShapeDrawable dAsteroide = new ShapeDrawable(
+                     new PathShape(pathAsteroide, 1, 1));
+             dAsteroide.getPaint().setColor(Color.WHITE);
+             dAsteroide.getPaint().setStyle(Paint.Style.STROKE);
+             dAsteroide.setIntrinsicWidth(50 - i * 14);
+             dAsteroide.setIntrinsicHeight(50 - i * 14);
+             drawableAsteoide[i] = dAsteroide;
+         }
+
+          //  drawableAsteroide = dAsteroide;
             setBackgroundColor(Color.BLACK);
 
 
@@ -169,16 +175,30 @@ SoundPool soundPool;
         ;
         if (pref.getString("graficos", "1").equals("1")) {
             setLayerType(View.LAYER_TYPE_HARDWARE, null);
-            drawableAsteroide =
+
+            drawableAsteoide[0] =
                     context.getResources().getDrawable(R.drawable.asteroide1);
             ContextCompat.getDrawable(context, R.drawable.asteroide1);
+            drawableAsteoide[1] =
+                    context.getResources().getDrawable(R.drawable.asteroide2);
+            ContextCompat.getDrawable(context, R.drawable.asteroide2);
+            drawableAsteoide[2] =
+                    context.getResources().getDrawable(R.drawable.asteroide3);
+            ContextCompat.getDrawable(context, R.drawable.asteroide3);
 
 
         }
         if (pref.getString("graficos", "1").equals("2") || pref.getString("graficos", "1").equals("3"))
 
         {
-            drawableAsteroide =
+            drawableAsteoide [0] =
+                    context.getResources().getDrawable(R.drawable.estrella);
+            ContextCompat.getDrawable(context, R.drawable.estrella);
+
+            drawableAsteoide [1] =
+                    context.getResources().getDrawable(R.drawable.estrella);
+            ContextCompat.getDrawable(context, R.drawable.estrella);
+            drawableAsteoide [2] =
                     context.getResources().getDrawable(R.drawable.estrella);
             ContextCompat.getDrawable(context, R.drawable.estrella);
 
@@ -209,7 +229,7 @@ SoundPool soundPool;
 
 
         for (int i = 0; i < numAsteroides; i++) {
-            Grafico asteroide = new Grafico(this, drawableAsteroide);
+            Grafico asteroide = new Grafico(this, drawableAsteoide[1]);
             asteroide.setIncY(Math.random() * 4 - 2);
             asteroide.setIncX(Math.random() * 4 - 2);
             asteroide.setAngulo((int) (Math.random() * 360));
@@ -322,6 +342,27 @@ SoundPool soundPool;
 
     private void destruyeAsteroide(int i) {
         synchronized (asteroides) {
+
+            int tam;
+            if(asteroides.get(i).getDrawable()!=drawableAsteoide[2]){
+                if(asteroides.get(i).getDrawable()==drawableAsteoide[1]){
+                    tam=2;
+                } else {
+                    tam=1;
+                }
+                for(int n=0;n<numFragmentos;n++){
+                    Grafico asteroide = new Grafico(this,drawableAsteoide[tam]);
+                    asteroide.setCenX(asteroides.get(i).getCenX());
+                    asteroide.setCenY(asteroides.get(i).getCenY());
+                    asteroide.setIncX(Math.random()*7-2-tam);
+                    asteroide.setIncY(Math.random()*7-2-tam);
+                    asteroide.setAngulo((int)(Math.random()*360));
+                    asteroide.setRotacion((int)(Math.random()*8-4));
+                    asteroides.add(asteroide);
+                }
+            }
+
+
             asteroides.remove(i);
             soundPool.play(idExplosion, 1, 1, 0, 0, 1);
             // misilActivo = false;
