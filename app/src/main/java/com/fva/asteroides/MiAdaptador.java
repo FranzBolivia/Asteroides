@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -16,9 +17,9 @@ import java.util.Vector;
 
 public class MiAdaptador extends RecyclerView.Adapter<MiAdaptador.ViewHolder> {
     private LayoutInflater inflador;
-    private Vector<String> lista;
+    private List<String> lista;
 
-    public MiAdaptador(Context context, Vector<String> lista) {
+    public MiAdaptador(Context context, List<String> lista) {
         this.lista = lista;
         inflador = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }

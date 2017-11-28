@@ -1,6 +1,8 @@
 package com.fva.asteroides;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -17,6 +19,7 @@ import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
@@ -35,6 +38,12 @@ import java.util.Vector;
  */
 
 public class VistaJuego extends View implements SensorEventListener {
+
+
+    private Activity padre;
+    public void setPadre(Activity padre) {
+        this.padre = padre;
+    }
 
 
     // Thread encargado de procesar el juego
@@ -59,7 +68,7 @@ public class VistaJuego extends View implements SensorEventListener {
     private int numAsteroides = 5; // Número inicial de asteroides
     private int numFragmentos = 3;
     private int numMisiles = 5;// Fragmentos en que se divide
-
+    private int puntuacion = 0;
     // //// MISIL //////
 
     private Vector<Grafico> misiles;
@@ -314,6 +323,7 @@ private Drawable drawableAsteoide[]=new Drawable[3];
                 for (int j = 0; j < asteroides.size(); j++) {
                     if (misiles.get(i).verificaColision(asteroides.get(j))) {
                         destruyeAsteroide(j);
+                        puntuacion += 1000;
                         tiempoMisiles.set(i, 0);
                         break;
                     }
@@ -322,7 +332,11 @@ private Drawable drawableAsteoide[]=new Drawable[3];
 
         }
 
-
+        for (Grafico asteroide : asteroides) {
+            if (asteroide.verificaColision(nave)) {
+                salir();
+            }
+        }
 
     // Actualizamos posición de misil
     /**  if (misilActivo) {
@@ -368,6 +382,9 @@ private Drawable drawableAsteoide[]=new Drawable[3];
             // misilActivo = false;
             // }
             this.postInvalidate();
+            if (asteroides.isEmpty()) {
+                salir();
+            }
         }
     }
     private void activaMisil() {
@@ -583,5 +600,13 @@ public void activarSensores() {
 
     public ThreadJuego getThread() {
         return thread;
+    }
+    private void salir() {
+        Bundle bundle = new Bundle();
+        bundle.putInt("puntuacion", puntuacion);
+        Intent intent = new Intent();
+        intent.putExtras(bundle);
+        padre.setResult(Activity.RESULT_OK, intent);
+        padre.finish();
     }
 }

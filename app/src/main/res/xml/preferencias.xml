@@ -25,7 +25,19 @@
         android:summary="En cuantos trozos se divide un asteroide"
         android:title="Número de Fragmentos" />
 
+        <ListPreference
+
+            android:entries="@array/tiposAlmacenamiento"
+            android:entryValues="@array/tiposAlmacenamientoValores"
+            android:key="almacenamiento"
+            android:summary="Se define el modo de almacenamiento"
+            android:title="Almacenamiento" />
+
+
+
     </PreferenceCategory>
+
+
 
 <PreferenceCategory
 android:key="Secundaria"
