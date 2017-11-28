@@ -3,6 +3,7 @@ package com.fva.asteroides;
 /**
  * Created by DTIC-Dir on 27/11/2017.
  */
+
 import android.content.Context;
 import android.util.Log;
 
@@ -22,39 +23,53 @@ public class AlmacenPuntuacionesGson implements AlmacenPuntuaciones {
     private Context context;
     private Gson gson = new Gson();
     private String string;
-    private Type type = new TypeToken<List<Puntuacion>>() {}.getType();
+    private Type type = new TypeToken<Clase>() {
+    }.getType();
 
     public AlmacenPuntuacionesGson(Context context) {
         this.context = context;
     }
 
     public void guardarPuntuacion(int puntos, String nombre, long fecha) {
-        ArrayList<Puntuacion> puntuaciones;
+
+
+        //ArrayList<Puntuacion> puntuaciones;
+        Clase objeto;
+
         this.string = leerString();
         if (this.string == null) {
-            puntuaciones = new ArrayList();
+          //  puntuaciones = new ArrayList();
+            objeto = new Clase();
         } else {
-            puntuaciones = (ArrayList) this.gson.fromJson(this.string, this.type);
+            objeto = gson.fromJson(string, type);
+
+            //puntuaciones = (ArrayList) this.gson.fromJson(this.string, this.type);
         }
-        puntuaciones.add(new Puntuacion(puntos, "Franz", fecha));
-        this.string = this.gson.toJson(puntuaciones, this.type);
+        objeto.puntuaciones.add(new Puntuacion(puntos,nombre,fecha));
+        //puntuaciones.add(new Puntuacion(puntos, "Franz", fecha));
+        //this.string = this.gson.toJson(puntuaciones, this.type);
+        string = gson.toJson(objeto, this.type);
         Log.i("Valor del string....", this.string);
         guardarString(this.string);
     }
 
     public List<String> listaPuntuaciones(int cantidad) {
-        ArrayList<Puntuacion> puntuaciones;
+        //ArrayList<Puntuacion> puntuaciones;
         this.string = leerString();
         Log.i("Valor del string....", this.string);
+        Clase objeto;
         if (this.string == null) {
-            puntuaciones = new ArrayList();
+            //puntuaciones = new ArrayList();
+            objeto = new Clase();
         } else {
-            puntuaciones = (ArrayList) this.gson.fromJson(this.string, this.type);
+            //puntuaciones = (ArrayList) this.gson.fromJson(this.string, this.type);
+            objeto = gson.fromJson(string, type);
         }
         List<String> salida = new ArrayList();
-        Iterator it = puntuaciones.iterator();
-        while (it.hasNext()) {
-            Puntuacion puntuacion = (Puntuacion) it.next();
+        //Iterator it = puntuaciones.iterator();
+        //while (it.hasNext()) {
+          for (Puntuacion puntuacion : objeto.puntuaciones) {
+//            Puntuacion puntuacion = (Puntuacion) it.next();
             salida.add(puntuacion.getPuntos() + " " + puntuacion.getNombre());
         }
         return salida;
@@ -78,6 +93,12 @@ public class AlmacenPuntuacionesGson implements AlmacenPuntuaciones {
             return null;
         }
     }
+
+    public class Clase {
+        private ArrayList<Puntuacion> puntuaciones = new ArrayList<>();
+        private boolean guardado;
+    }
+
 }
 
 

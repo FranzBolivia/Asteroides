@@ -21,7 +21,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 public class AlmacenPuntuacionesXML_SAX implements AlmacenPuntuaciones {
-    private static String FICHERO = "puntuaciones.xml";
+    private static String FICHERO = "puntuaciones2.xml";
     private Context contexto;
     private ListaPuntuaciones lista;
     private boolean cargadaLista;
@@ -29,39 +29,39 @@ public class AlmacenPuntuacionesXML_SAX implements AlmacenPuntuaciones {
     public AlmacenPuntuacionesXML_SAX(Context contexto) {
         this.contexto = contexto;
         lista = new ListaPuntuaciones();
-                cargadaLista=false;
+        cargadaLista = false;
     }
 
+    @Override
     public void guardarPuntuacion(int puntos, String nombre, long fecha) {
         try {
             if (!cargadaLista) {
-                this.lista.leerXML(this.contexto.openFileInput(FICHERO));
+                lista.leerXML(contexto.openFileInput(FICHERO));
             }
         } catch (FileNotFoundException e) {
-        } catch (Exception e2) {
-            Log.e("AsteroidesXML", e2.getMessage(), e2);
+        } catch (Exception e) {
+            Log.e("Asteroides", e.getMessage(), e);
         }
-        this.lista.nuevo(puntos, nombre, fecha);
+        lista.nuevo(puntos, nombre, fecha);
         try {
-            this.lista.escribirXML(this.contexto.openFileOutput(FICHERO,Context.MODE_PRIVATE));
+            lista.escribirXML(contexto.openFileOutput(FICHERO,
+                    Context.MODE_PRIVATE));
         } catch (Exception e) {
             Log.e("Asteroides", e.getMessage(), e);
         }
     }
 
+    @Override
     public List<String> listaPuntuaciones(int cantidad) {
-
         try {
             if (!cargadaLista) {
                 lista.leerXML(contexto.openFileInput(FICHERO));
-                Log.i("Test-XML", "Entro a leer");
             }
         } catch (Exception e) {
-            Log.e("AsteroidesXML", e.getMessage(), e);
+            Log.e("Asteroides", e.getMessage(), e);
         }
-        return this.lista.aListString();
+        return lista.aListString();
     }
-
     private class ListaPuntuaciones {
         private class Puntuacion {
             int puntos;
@@ -104,16 +104,9 @@ public class AlmacenPuntuacionesXML_SAX implements AlmacenPuntuaciones {
                 cadena = new StringBuilder();
             }
 
-            @Override
-            public void startElement(java.lang.String uri,
-                                     java.lang.String localName,
-                                     java.lang.String qName,
-                                     Attributes attributes)
-                    throws SAXException
-            //@Override
-         //   public void startElement(String uri, String nombreLocal, String nombreCualif, Attributes atr) throws SAXException {
+            public void startElement(String uri, String nombreLocal, String nombreCualif, Attributes atr) throws SAXException {
                 cadena.setLength(0);
-                if (nombreLocal.equals("puntuacion")) {
+                if (nombreLocal.equals("puntuacion2")) {
                     puntuacion = new Puntuacion();
                     puntuacion.fecha = Long.parseLong(atr.getValue("fecha"));
                 }
@@ -123,7 +116,8 @@ public class AlmacenPuntuacionesXML_SAX implements AlmacenPuntuaciones {
                 cadena.append(ch, comienzo, lon);
             }
             @Override
-            public void endElement(String uri, String nombreLocal, String nombreCualif) throws SAXException {
+            public void endElement(String uri, String nombreLocal,
+                                   String nombreCualif) throws SAXException {
                 if (nombreLocal.equals("puntos")) {
                     puntuacion.puntos = Integer.parseInt(cadena.toString());
                 } else if (nombreLocal.equals("nombre")) {
@@ -135,8 +129,6 @@ public class AlmacenPuntuacionesXML_SAX implements AlmacenPuntuaciones {
             @Override
             public void endDocument() throws SAXException {}
         }
-
-
         public void escribirXML(OutputStream salida) {
             XmlSerializer serializador = Xml.newSerializer();
             try {
@@ -162,5 +154,5 @@ public class AlmacenPuntuacionesXML_SAX implements AlmacenPuntuaciones {
             }
         }
     } //Cerramos ListaPuntuaciones
-} //Cerramos AlmacenPuntuacionesXML_SAX
+}
 
