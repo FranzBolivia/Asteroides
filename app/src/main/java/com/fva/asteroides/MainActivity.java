@@ -107,6 +107,15 @@ public class MainActivity extends AppCompatActivity {
             almacen = new AlmacenPuntuacionesGson(this);
         }
 
+        if (pref.getString("almacenamiento", "1").equals("8")) {
+            Log.i("Preferencias..","Entro GSON");
+            almacen = new AlmacenPuntuacionesJSon(this);
+        }
+        if (pref.getString("almacenamiento", "1").equals("9")) {
+            Log.i("Preferencias..","Entro SQLite");
+            almacen = new AlmacenPuntuacionesSQLite(this);
+        }
+
         super.onCreate(savedInstanceState);
 
 
@@ -316,6 +325,14 @@ public class MainActivity extends AppCompatActivity {
             if (pref.getString("almacenamiento", "1").equals("7")) {
                 Log.i("Preferencias..","Entro GSON");
                 almacen = new AlmacenPuntuacionesGson(this);
+            }
+            if (pref.getString("almacenamiento", "1").equals("8")) {
+                Log.i("Preferencias..","Entro GSON");
+                almacen = new AlmacenPuntuacionesJSon(this);
+            }
+            if (pref.getString("almacenamiento", "1").equals("9")) {
+                Log.i("Preferencias..","Entro SQLite");
+                almacen = new AlmacenPuntuacionesSQLite(this);
             }
 
         }
