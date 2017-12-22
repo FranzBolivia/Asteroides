@@ -116,6 +116,11 @@ public class MainActivity extends AppCompatActivity {
             almacen = new AlmacenPuntuacionesSQLite(this);
         }
 
+        if (pref.getString("almacenamiento", "1").equals("10")) {
+            Log.i("Preferencias..","Entro Provider");
+                    almacen = new AlmacenPuntuacionesProvider(this);
+        }
+
         super.onCreate(savedInstanceState);
 
 
@@ -332,7 +337,11 @@ public class MainActivity extends AppCompatActivity {
             }
             if (pref.getString("almacenamiento", "1").equals("9")) {
                 Log.i("Preferencias..","Entro SQLite");
-                almacen = new AlmacenPuntuacionesSQLite(this);
+                almacen = new AlmacenPuntuacionesSQLiteRel(this);
+            }
+            if (pref.getString("almacenamiento", "1").equals("10")) {
+                Log.i("Preferencias..","Entro Provider");
+                almacen = new AlmacenPuntuacionesProvider(this);
             }
 
         }
